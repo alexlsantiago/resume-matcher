@@ -1,0 +1,1 @@
+We are looking for a Software Engineer with experience in Python, machine learning, and natural language processing. Ideal candidates have worked with TensorFlow, PyTorch, or similar frameworks, and are familiar with REST APIs, data preprocessing, and cloud environments like AWS.
