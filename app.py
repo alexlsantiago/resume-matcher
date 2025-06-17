@@ -12,7 +12,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 from synonyms import SYNONYM_MAP
 
-st.set_page_config(page_title="AI Resume vs Jobs Matcher", layout="centered")
+st.set_page_config(page_title="AI Job Matcher", layout="centered")
 
 st.markdown("""
     <style>
@@ -31,7 +31,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<h1 style='white-space: nowrap; font-size: 2.4rem; margin-bottom: 1rem;'>🧠 Resume vs Job Descriptions Matcher</h1>
+<h1 style='white-space: nowrap; font-size: 2.4rem; margin-bottom: 1rem;'>Find Your Next Job</h1>
+<p style='font-size: 1.2rem; margin-bottom: 1rem;'>Upload your resume and job descriptions to find the best matches.</p>
 """, unsafe_allow_html=True)
 
 
