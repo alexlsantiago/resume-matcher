@@ -35,7 +35,6 @@ st.markdown("""
 <p style='font-size: 1.2rem; margin-bottom: 1rem;'>Upload your resume and job descriptions to find the best matches.</p>
 """, unsafe_allow_html=True)
 
-
 # ----- Functions -----
 
 def extract_text_from_pdf(pdf_bytes):
@@ -109,15 +108,12 @@ st.markdown("""
 </p>
 """, unsafe_allow_html=True)
 
+# ----- Analyze Button -----
 
-# ----- Matching -----
-
-if st.button("🔍 Analyze Fit"):
+if st.button("Analyze Fit"):
     if not resume_file or not zip_files:
         st.error("Please upload both a resume and at least one ZIP file of job descriptions.")
     else:
-        st.info("Processing...")
-
         resume_text = extract_text_from_pdf(resume_file.read())
         all_jobs = []
         for zf in zip_files:
@@ -146,13 +142,23 @@ if st.button("🔍 Analyze Fit"):
 
         results.sort(key=lambda x: x["match_pct"], reverse=True)
         df = pd.DataFrame(results)
-        st.session_state["df"] = df
+
         st.session_state["results"] = results
+        st.session_state["df"] = df
+        st.session_state["analyzed"] = True
+        st.experimental_rerun()
 
 # ----- Display Results -----
 
-if "results" in st.session_state:
+if st.session_state.get("analyzed") and "results" in st.session_state:
     st.subheader("📄 Job Matches")
+
+    st.download_button(
+        label="📥 Download CSV of Results",
+        data=st.session_state["df"].to_csv(index=False),
+        file_name="resume_vs_jobs.csv",
+        mime="text/csv"
+    )
 
     for job in st.session_state["results"]:
         st.markdown(f"**{job['title']}** at *{job['company']}*")
@@ -166,10 +172,3 @@ if "results" in st.session_state:
             st.markdown("_No matched keywords._")
 
         st.markdown("---")
-
-    st.download_button(
-        label="📥 Download CSV of Results",
-        data=st.session_state["df"].to_csv(index=False),
-        file_name="resume_vs_jobs.csv",
-        mime="text/csv"
-    )
