@@ -110,7 +110,9 @@ st.markdown("""
 
 # ----- Analyze Button -----
 
-if st.button("Analyze Fit"):
+analyze_clicked = st.button("🔍 Analyze Fit")
+
+if analyze_clicked:
     if not resume_file or not zip_files:
         st.error("Please upload both a resume and at least one ZIP file of job descriptions.")
     else:
@@ -145,12 +147,11 @@ if st.button("Analyze Fit"):
 
         st.session_state["results"] = results
         st.session_state["df"] = df
-        st.session_state["analyzed"] = True
-        st.experimental_rerun()
+
 
 # ----- Display Results -----
 
-if st.session_state.get("analyzed") and "results" in st.session_state:
+if "results" in st.session_state:
     st.subheader("📄 Job Matches")
 
     st.download_button(
@@ -172,3 +173,4 @@ if st.session_state.get("analyzed") and "results" in st.session_state:
             st.markdown("_No matched keywords._")
 
         st.markdown("---")
+
