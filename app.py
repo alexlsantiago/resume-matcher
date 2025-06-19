@@ -116,38 +116,40 @@ if analyze_clicked:
     if not resume_file or not zip_files:
         st.error("Please upload both a resume and at least one ZIP file of job descriptions.")
     else:
-        resume_text = extract_text_from_pdf(resume_file.read())
-        all_jobs = []
-        for zf in zip_files:
-            all_jobs.extend(extract_jobs_from_zip(zf))
+        with st.spinner("Processing your files..."):
+            resume_text = extract_text_from_pdf(resume_file.read())
+            all_jobs = []
+            for zf in zip_files:
+                all_jobs.extend(extract_jobs_from_zip(zf))
 
-        model = SentenceTransformer('all-MiniLM-L6-v2')
-        resume_embedding = model.encode(resume_text, convert_to_tensor=False)
+            model = SentenceTransformer('all-MiniLM-L6-v2')
+            resume_embedding = model.encode(resume_text, convert_to_tensor=False)
 
-        results = []
-        for job in all_jobs:
-            jd_embedding = model.encode(job["description"], convert_to_tensor=False)
-            similarity = cosine_similarity([resume_embedding], [jd_embedding])[0][0]
+            results = []
+            for job in all_jobs:
+                jd_embedding = model.encode(job["description"], convert_to_tensor=False)
+                similarity = cosine_similarity([resume_embedding], [jd_embedding])[0][0]
 
-            base_keywords = extract_keywords(job["description"], top_n=20)
-            expanded_keywords = expand_keywords(base_keywords, SYNONYM_MAP)
-            matched, match_pct = match_keywords_advanced(resume_text, expanded_keywords)
+                base_keywords = extract_keywords(job["description"], top_n=20)
+                expanded_keywords = expand_keywords(base_keywords, SYNONYM_MAP)
+                matched, match_pct = match_keywords_advanced(resume_text, expanded_keywords)
 
-            results.append({
-                "title": job["title"],
-                "company": job["company"],
-                "link": job["link"],
-                "score": round(similarity, 2),
-                "match_pct": match_pct,
-                "matched": matched
-            })
+                results.append({
+                    "title": job["title"],
+                    "company": job["company"],
+                    "link": job["link"],
+                    "score": round(similarity, 2),
+                    "match_pct": match_pct,
+                    "matched": matched
+                })
 
-        results.sort(key=lambda x: x["match_pct"], reverse=True)
-        df = pd.DataFrame(results)
+            results.sort(key=lambda x: x["match_pct"], reverse=True)
+            df = pd.DataFrame(results)
 
-        st.session_state["results"] = results
-        st.session_state["df"] = df
+            st.session_state["results"] = results
+            st.session_state["df"] = df
 
+        st.experimental_rerun()
 
 # ----- Display Results -----
 
@@ -173,4 +175,3 @@ if "results" in st.session_state:
             st.markdown("_No matched keywords._")
 
         st.markdown("---")
-
