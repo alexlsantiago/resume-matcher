@@ -149,8 +149,6 @@ if analyze_clicked:
             st.session_state["results"] = results
             st.session_state["df"] = df
 
-        st.experimental_rerun()
-
 # ----- Display Results -----
 
 if "results" in st.session_state:
