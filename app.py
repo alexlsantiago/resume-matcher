@@ -102,6 +102,7 @@ def extract_jobs_from_zip(zip_file):
 
 resume_file = st.file_uploader("Upload Your Resume (PDF)", type=["pdf"])
 zip_files = st.file_uploader("Upload One or More Job ZIP Files", type=["zip"], accept_multiple_files=True)
+
 st.markdown("""
 <p style='font-size: 0.95rem; margin-top: -0.5rem; margin-bottom: 1.5rem;'>
     Don’t have a ZIP of job descriptions? <a href="https://your-job-scraper-url.com" target="_blank" style="color: #4f8bf9; text-decoration: underline;">Click here to scrape jobs</a>.
@@ -110,13 +111,11 @@ st.markdown("""
 
 # ----- Analyze Button -----
 
-analyze_clicked = st.button("🔍 Analyze Fit")
-
-if analyze_clicked:
+if st.button("🔍 Analyze Fit"):
     if not resume_file or not zip_files:
         st.error("Please upload both a resume and at least one ZIP file of job descriptions.")
     else:
-        with st.spinner("Processing your files..."):
+        with st.spinner("Analyzing..."):
             resume_text = extract_text_from_pdf(resume_file.read())
             all_jobs = []
             for zf in zip_files:
@@ -155,7 +154,7 @@ if "results" in st.session_state:
     st.subheader("📄 Job Matches")
 
     st.download_button(
-        label="📥 Download CSV of Results",
+        label="📅 Download CSV of Results",
         data=st.session_state["df"].to_csv(index=False),
         file_name="resume_vs_jobs.csv",
         mime="text/csv"
